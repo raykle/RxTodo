@@ -11,6 +11,7 @@ import UIKit
 import CGFloatLiteral
 import ManualLayout
 import RxOptional
+import RxViewController
 import SnapKit
 import Then
 
@@ -28,8 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window.makeKeyAndVisible()
 
     let serviceProvider = ServiceProvider()
-    let viewModel = TaskListViewModel(provider: serviceProvider)
-    let viewController = TaskListViewController(viewModel: viewModel)
+    let reactor = TaskListViewReactor(provider: serviceProvider)
+    let viewController = TaskListViewController(reactor: reactor)
     let navigationController = UINavigationController(rootViewController: viewController)
     window.rootViewController = navigationController
 

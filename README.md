@@ -4,13 +4,13 @@ RxTodo
 ![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg)
 [![Build Status](https://travis-ci.org/devxoul/RxTodo.svg?branch=master)](https://travis-ci.org/devxoul/RxTodo)
 
-RxTodo is an iOS application developed using [RxSwift](https://github.com/ReactiveX/RxSwift) and MVVM design pattern. This project is for whom having trouble with learning RxSwift and MVVM due to lack of references. (as I did 😁)
+RxTodo is an iOS application developed using [ReactorKit](https://github.com/devxoul/ReactorKit). This project is for whom having trouble with learning how to build a RxSwift application due to lack of references. (as I did 😛)
 
 
 Features
 --------
 
-* MVVM design pattern
+* Using [ReactorKit](https://github.com/devxoul/ReactorKit)
 * Using [RxDataSources](https://github.com/RxSwiftCommunity/RxDataSources)
 * Observing model create/update/delete across the view controllers
 * Navigating between view controllers
@@ -18,65 +18,12 @@ Features
 * Testing with [RxExpect](https://github.com/devxoul/RxExpect)
 
 
-Philosophy
-----------
+Architecture
+------------
 
-* View doesn't have control flow. View cannot modify the data. View only knows how to map the data.
+<img alt="reactorkit" src="https://cloud.githubusercontent.com/assets/931655/25098066/2de21a28-23e2-11e7-8a41-d33d199dd951.png">
 
-    **Bad**
-
-    ```swift
-    viewModel.titleLabelText
-      .map { $0 + "!" } // Bad: View should not modify the data
-      .bindTo(self.titleLabel)
-    ```
-
-    **Good**
-    
-    ```swift
-    viewModel.titleLabelText
-      .bindTo(self.titleLabel.rx.text)
-    ```
-
-* View doesn't know what ViewModel does. View can only communicate to ViewModel about what View did.
-
-    **Bad**
-
-    ```swift
-    viewModel.login() // Bad: View should not know what ViewModel does (login)
-    ```
-
-    **Good**
-    
-    ```swift
-    self.loginButton.rx.tap
-      .bindTo(viewModel.loginButtonDidTap) // "Hey I clicked the login button"
-
-    self.usernameInput.rx.controlEvent(.editingDidEndOnExit)
-      .bindTo(viewModel.usernameInputDidReturn) // "Hey I tapped the return on username input"
-    ```
-
-* Model is hidden by ViewModel. ViewModel only exposes the minimum data so that View can render.
-
-    **Bad**
-    
-    ```swift
-    struct ProductViewModel {
-      let product: Driver<Product> // Bad: ViewModel should hide Model
-    }
-    ```
-
-    **Good**
-    
-    ```swift
-    struct ProductViewModel {
-      let productName: Driver<String>
-      let formattedPrice: Driver<String>
-      let formattedOriginalPrice: Driver<String>
-      let isOriginalPriceHidden: Driver<Bool>
-    }
-    ```
-
+Visit [ReactorKit](https://github.com/devxoul/ReactorKit) for detail.
 
 Requirements
 ------------

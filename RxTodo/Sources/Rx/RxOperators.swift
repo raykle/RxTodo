@@ -41,7 +41,7 @@ func nonMarkedText(_ textInput: UITextInput) -> String? {
 
 func <-> <Base: UITextInput>(textInput: TextInput<Base>, variable: Variable<String>) -> Disposable {
     let bindToUIDisposable = variable.asObservable()
-        .bindTo(textInput.text)
+        .bind(to: textInput.text)
     let bindToVariable = textInput.text
         .subscribe(onNext: { [weak base = textInput.base] n in
             guard let base = base else {
@@ -83,7 +83,7 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
     }
 
     let bindToUIDisposable = variable.asObservable()
-        .bindTo(property)
+        .bind(to: property)
     let bindToVariable = property
         .subscribe(onNext: { n in
             variable.value = n
@@ -100,5 +100,24 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
 extension ObservableType {
   func ignoreErrors() -> Observable<E> {
     return self.catchError { _ in .empty() }
+  }
+}
+
+
+// MARK: - Filter
+
+extension ObservableType {
+  func filter<O: ObservableType>(_ predicate: O) -> Observable<E> where O.E == Bool {
+    return self
+      .withLatestFrom(predicate) { element, predicate in (element, predicate) }
+      .filter { _, predicate in predicate }
+      .map { element, _ in element }
+  }
+
+  func filterNot<O: ObservableType>(_ predicate: O) -> Observable<E> where O.E == Bool {
+    return self
+      .withLatestFrom(predicate) { element, predicate in (element, predicate) }
+      .filter { _, predicate in !predicate }
+      .map { element, _ in element }
   }
 }

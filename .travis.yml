@@ -1,7 +1,17 @@
 language: objective-c
-osx_image: xcode8
-rvm:
-  - 2.3.1
+osx_image: xcode8.3
+
+cache:
+  - bundler
+  - cocoapods
+
+env:
+  global:
+    - WORKSPACE="RxTodo.xcworkspace"
+    - IOS_SDK="iphonesimulator10.2"
+    - IOS_DESTINATION="platform=iOS Simulator,name=iPhone 7,OS=10.3.1"
+  matrix:
+    - SCHEME="RxTodo"        SDK="$IOS_SDK"      ACTION="test"
 
 install:
   - bundle install
@@ -9,4 +19,4 @@ install:
   - bundle exec pod install
 
 script:
-  - xcodebuild -workspace 'RxTodo.xcworkspace' -scheme 'RxTodo' -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | xcpretty -c
+  - set -o pipefail && xcodebuild clean $ACTION -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$IOS_DESTINATION" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c
